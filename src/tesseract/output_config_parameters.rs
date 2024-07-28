@@ -44,7 +44,7 @@ impl FromLine for ConfigParameter {
 }
 
 pub fn get_tesseract_config_parameters() -> TessResult<ConfigParameterOutput> {
-    let mut command = get_tesseract_command();
+    let mut command = get_tesseract_command(None);
     command.arg("--print-parameters");
 
     let output = run_tesseract_command(&mut command)?;

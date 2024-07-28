@@ -25,14 +25,15 @@ fn main() {
     // use default_args to call a function if no particular config is needed
     let default_args = Args::default();
 
-    let tesseract_version = rusty_tesseract::get_tesseract_version().unwrap();
+    let tesseract_version = rusty_tesseract::get_tesseract_version(None).unwrap();
     println!("The tesseract version is: {}", tesseract_version);
 
-    let tesseract_langs = rusty_tesseract::get_tesseract_langs().unwrap();
+    let tesseract_langs = rusty_tesseract::get_tesseract_langs(None).unwrap();
     println!("The available languages are: {:?}", tesseract_langs);
 
     // fill your own argument struct if needed
     let image_to_string_args = Args {
+        executable: Some("C:\\Program Files\\Tesseract-OCR\\tesseract.exe".into()),
         lang: "eng".into(),
         config_variables: HashMap::from([(
             "tessedit_char_whitelist".into(),

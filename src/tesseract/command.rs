@@ -10,7 +10,11 @@ use std::os::windows::process::CommandExt;
 #[cfg(target_os = "windows")]
 const CREATE_NO_WINDOW: u32 = 0x08000000;
 
-pub(crate) fn get_tesseract_command() -> Command {
+pub(crate) fn get_tesseract_command(executable: Option<String>) -> Command {
+    if let Some(executable) = executable {
+        return Command::new(executable);
+    }
+
     let tesseract = if cfg!(target_os = "windows") {
         "tesseract.exe"
     } else {
@@ -20,15 +24,15 @@ pub(crate) fn get_tesseract_command() -> Command {
     Command::new(tesseract)
 }
 
-pub fn get_tesseract_version() -> TessResult<String> {
-    let mut command = get_tesseract_command();
+pub fn get_tesseract_version(executable: Option<String>) -> TessResult<String> {
+    let mut command = get_tesseract_command(executable);
     command.arg("--version");
 
     run_tesseract_command(&mut command)
 }
 
-pub fn get_tesseract_langs() -> TessResult<Vec<String>> {
-    let mut command = get_tesseract_command();
+pub fn get_tesseract_langs(executable: Option<String>) -> TessResult<Vec<String>> {
+    let mut command = get_tesseract_command(executable);
     command.arg("--list-langs");
 
     let output = run_tesseract_command(&mut command)?;
@@ -86,7 +90,7 @@ pub fn image_to_string(image: &Image, args: &Args) -> TessResult<String> {
 }
 
 pub(crate) fn create_tesseract_command(image: &Image, args: &Args) -> TessResult<Command> {
-    let mut command = get_tesseract_command();
+    let mut command = get_tesseract_command(args.executable.clone());
     command
         .arg(image.get_image_path()?)
         .arg("stdout")
@@ -118,7 +122,13 @@ mod tests {
 
     #[test]
     fn test_get_tesseract_langs() {
-        let langs = get_tesseract_langs().unwrap();
+        let tesseract = if cfg!(target_os = "windows") {
+            "tesseract.exe"
+        } else {
+            "tesseract"
+        };
+
+        let langs = get_tesseract_langs(Some(tesseract.to_string())).unwrap();
 
         assert!(langs.contains(&"eng".into()));
     }
