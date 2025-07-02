@@ -74,12 +74,6 @@ fn show_command(command: &Command) {
         .map(|x| x.to_str().unwrap_or(""))
         .map(|s| s.to_string())
         .collect();
-
-    println!(
-        "Tesseract Command: {} {}",
-        command.get_program().to_str().unwrap(),
-        params.join(" ")
-    );
 }
 
 pub fn image_to_string(image: &Image, args: &Args) -> TessResult<String> {
