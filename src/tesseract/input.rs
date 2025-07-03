@@ -10,6 +10,7 @@ use crate::{TessError, TessResult};
 #[derive(Clone, Debug, PartialEq)]
 pub struct Args {
     pub executable: Option<String>,
+    pub tessdata_dir: Option<String>,
     pub lang: String,
     pub config_variables: HashMap<String, String>,
     pub dpi: Option<i32>,
@@ -21,6 +22,7 @@ impl Default for Args {
     fn default() -> Self {
         Args {
             executable: None,
+            tessdata_dir: None,
             lang: "eng".into(),
             config_variables: HashMap::new(),
             dpi: Some(150),

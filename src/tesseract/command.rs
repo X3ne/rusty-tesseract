@@ -74,6 +74,12 @@ fn show_command(command: &Command) {
         .map(|x| x.to_str().unwrap_or(""))
         .map(|s| s.to_string())
         .collect();
+
+    println!(
+        "Running command: {} {}",
+        command.get_program().to_string_lossy(),
+        params.join(" ")
+    );
 }
 
 pub fn image_to_string(image: &Image, args: &Args) -> TessResult<String> {
@@ -101,6 +107,10 @@ pub(crate) fn create_tesseract_command(image: &Image, args: &Args) -> TessResult
 
     if let Some(oem) = args.oem {
         command.arg("--oem").arg(oem.to_string());
+    }
+
+    if let Some(tessdata_dir) = &args.tessdata_dir {
+        command.arg("--tessdata-dir").arg(tessdata_dir);
     }
 
     for parameter in args.get_config_variable_args() {
